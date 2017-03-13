@@ -16,33 +16,41 @@ export interface AddAttendanFormProps {
 export class AddAttendanForm extends React.Component<AddAttendanFormProps, {}> {
 
     props: AddAttendanFormProps;
-    refs: {
-        [key: string]: (HTMLInputElement);
-        stepInput: (HTMLInputElement);
+    state: AttendantForm;
+
+    resetState = (): void => {
+        this.setState({name: '', surname: ''});
     };
 
     constructor(props: AddAttendanFormProps) {
         super(props);
         this.props = props;
-    }
+        this.resetState();
+    };
 
     formSubmitHandler= (e: any): void => {
-        let attendant: AttendantForm;
         e.preventDefault();
-        if (this.refs.name.value &&  this.refs.surname.value ) {
-            attendant = { name: this.refs.name.value, surname: this.refs.surname.value};
-            this.props.onFormSubmit(attendant);
-            this.refs.name.value = '';
-            this.refs.surname.value = '';
+        if (this.state.name &&  this.state.surname ) {
+            this.props.onFormSubmit(this.state);
+            this.resetState();
         }
+    };
 
+    onNameChangeHandler = (event: React.FormEvent<HTMLInputElement> ) => {
+      let newState = Object.assign({}, this.state, {name: event.currentTarget.value}) ;
+      this.setState(newState);
+    };
+
+    onSurnameChangeHandler = (event: React.FormEvent<HTMLInputElement> ) => {
+        let newState = Object.assign({}, this.state, {surname: event.currentTarget.value}) ;
+        this.setState(newState);
     };
 
     render() {
         return(
             <form onSubmit={this.formSubmitHandler}>
-                <input type="text" placeholder="Name" ref="name"/>
-                <input type="text" placeholder="Surname" ref="surname"/>
+                <input type="text" placeholder="Name" onChange={this.onNameChangeHandler}/>
+                <input type="text" placeholder="Surname" onChange={this.onSurnameChangeHandler}/>
                 <input type="submit" />
             </form>
         );
